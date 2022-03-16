@@ -1,27 +1,107 @@
 import styled from '@emotion/styled';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import { ReactComponent as Search } from '../icons/Search.svg';
+import {
+  clearData,
+  getLocalData,
+  searchDisease,
+} from '../redux/diseaseReducer';
 import Dropdown from './Dropdown';
-
-import items from '../data.json';
 
 export default function SearchForm() {
   const isDesktop = useMediaQuery({ query: '(min-Width: 1040px)' });
-  const inputRef = useRef(null);
 
   const [isShowing, setIsShowing] = useState(false);
+  const [isMovingMouse, setIsMovingMouse] = useState(false);
   const [cursor, setCursor] = useState(-1);
-  const [data, setData] = useState(items);
-  const [selected, setSelected] = useState(); // selected item, 필요 없을 경우 삭제
+
+  const [searchText, setSearchText] = useState('');
+  const [timer, setTimer] = useState(null);
+
+  const dispatch = useDispatch();
+  const data = useSelector((state) => state.data);
+
+  const keyboardNavigation = useCallback(
+    (e) => {
+      setIsMovingMouse(false);
+      if (e.key === 'ArrowDown') {
+        isShowing &&
+          setCursor((prev) => (prev < data.data.length - 1 ? prev + 1 : prev));
+      }
+      if (e.key === 'ArrowUp') {
+        isShowing && setCursor((prev) => (prev > 0 ? prev - 1 : 0));
+      }
+      if (e.key === 'Escape') {
+        setIsShowing(false);
+      }
+      if (e.key === 'Enter' && cursor > 0) {
+        setIsShowing(false);
+      }
+    },
+    [data, isShowing, setCursor, setIsShowing, cursor],
+  );
+
+  const getData = async (value) => {
+    if (value === '') {
+      dispatch(clearData());
+      return;
+    }
+
+    const cache = JSON.parse(localStorage.getItem('searchResult'));
+
+    if (
+      cache !== null &&
+      cache[value] &&
+      Date.now() < cache[value].expireTime
+    ) {
+      // cache된 데이터 가져옴
+      dispatch(getLocalData({ keyword: value }));
+    } else {
+      // api로 데이터 가져옴
+      dispatch(searchDisease(value));
+    }
+  };
+
+  const debounce = (callback) => {
+    if (timer) {
+      clearTimeout(timer);
+    }
+    const newTimer = setTimeout(callback, 800);
+    setTimer(newTimer);
+  };
+
+  const onchangeValue = (e) => {
+    const { value } = e.target;
+    setSearchText(value);
+    debounce(() => {
+      getData(value);
+    });
+  };
 
   const showResult = (e) => {
     if (e.key === 'Enter') {
       setIsShowing(true);
-      setCursor(0);
-      inputRef.current.blur();
+      e.target.blur();
     }
   };
+
+  const mousedown = (e, index) => {
+    setIsMovingMouse(true);
+    setCursor(index);
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', keyboardNavigation);
+    window.addEventListener('click', () => {
+      setIsShowing(false);
+      setCursor(-1);
+    });
+    return () => {
+      window.removeEventListener('keydown', keyboardNavigation);
+    };
+  }, [keyboardNavigation]);
 
   return (
     <Container>
@@ -34,38 +114,35 @@ export default function SearchForm() {
         <SearchBar>
           {isDesktop && <Search />}
           <input
-            ref={inputRef}
             type="text"
             placeholder="질환명을 입력해 주세요."
-            // onChange={onchangeValue}
-            // onKeyDown={onKeyDown}
+            value={searchText}
+            onChange={onchangeValue}
             onKeyUp={showResult}
-            // onKeyDown={keyboardNavigation}
           />
           {!isDesktop && <Search />}
         </SearchBar>
         {isDesktop && <SearchButton>검색</SearchButton>}
       </SearchBarWrap>
       {isShowing && (
-        <ResultListWrapper>
+        <ResultListWrap
+          isDesktop={isDesktop}
+          onClick={(e) => e.stopPropagation()}
+        >
           <Dropdown
             isShowing={isShowing}
-            setIsShowing={setIsShowing}
-            setSelected={setSelected}
-            data={data}
+            data={data.data}
             cursor={cursor}
-            setCursor={setCursor}
+            mousedown={mousedown}
+            isMovingMouse={isMovingMouse}
           />
-        </ResultListWrapper>
+        </ResultListWrap>
       )}
     </Container>
   );
 }
 
 const Container = styled.div`
-  width: 100vw;
-  height: 100vh;
-  background-color: #cae9ff;
   padding-top: 80px;
 `;
 
@@ -119,7 +196,9 @@ const SearchButton = styled.div`
   border-radius: 0 42px 42px 0;
 `;
 
-const ResultListWrapper = styled.div`
+const ResultListWrap = styled.div`
   width: 100%;
+  margin: 0 auto;
   margin-top: 10px;
+  width: ${({ isDesktop }) => (isDesktop ? '660px' : 'calc(100vw - 40px)')};
 `;

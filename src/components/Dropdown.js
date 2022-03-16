@@ -1,62 +1,35 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 
 import { ReactComponent as Search } from '../icons/Search.svg';
 
-const Dropdown = ({
-  isShowing,
-  setIsShowing,
-  data,
-  setSelected,
-  cursor,
-  setCursor,
-}) => {
+const Dropdown = ({ isShowing, data, cursor, mousedown, isMovingMouse }) => {
   const containerRef = useRef();
-  const [listItem, setListItem] = useState([]);
 
   useEffect(() => {
-    console.log(cursor);
-    console.log(data.length);
-    console.log(isShowing);
-    if (cursor < 0 || cursor > data.length || !isShowing) {
+    if (isMovingMouse) {
       return;
     }
-    containerRef.current.focus();
-    let listItem = Array.from(containerRef.current.children);
-    console.log(listItem);
-  }, [cursor, isShowing, data.length]);
-
-  const keyboardNavigation = (e) => {
-    if (e.key === 'ArrowDown') {
-      console.log('keydown');
-      isShowing &&
-        setCursor((prev) => (prev < data.length - 1 ? prev + 1 : prev));
+    if (cursor >= 0 && isShowing && data.length > 0) {
+      containerRef &&
+        containerRef.current.children[cursor].scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
     }
-
-    if (e.key === 'ArrowUp') {
-      console.log('keyup');
-      isShowing && setCursor((prev) => (prev > 0 ? prev - 1 : 0));
-    }
-
-    if (e.key === 'Escape') {
-      console.log('escape');
-      setIsShowing(false);
-    }
-
-    if (e.key === 'Enter' && cursor > 0) {
-      console.log('enter');
-      setSelected(data[cursor].name);
-      setIsShowing(false);
-    }
-  };
+  }, [cursor, data, isShowing, isMovingMouse]);
 
   return (
     <Container>
       {isShowing && data.length > 0 ? (
-        <ResultList ref={containerRef} onKeyDown={keyboardNavigation}>
+        <ResultList ref={containerRef}>
           <Suggestions>추천검색어</Suggestions>
           {data.map((item, index) => (
-            <Result key={index} onClick={() => setSelected(item)}>
+            <Result
+              key={index}
+              selected={cursor === index}
+              onMouseMove={(e) => mousedown(e, index)}
+            >
               <Search />
               <ResultText>{item.name}</ResultText>
             </Result>
@@ -74,10 +47,9 @@ const Dropdown = ({
 export default Dropdown;
 
 const Container = styled.div`
-  border: 1px solid #ddd; // need to delete when component is merged
   border-radius: 24px;
   padding: 24px 0;
-  width: 660px;
+  width: 100%;
   height: auto;
   max-height: 352px;
   overflow-y: auto;
@@ -108,6 +80,7 @@ const Result = styled.li`
   &:hover {
     background-color: #f0f0f0;
   }
+  background-color: ${(props) => props.selected && '#f0f0f0'};
 `;
 
 const ResultText = styled.span`
