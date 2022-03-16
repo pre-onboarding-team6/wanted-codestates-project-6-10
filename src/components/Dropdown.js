@@ -1,22 +1,66 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import SearchIcon from '../icons/Search';
 
-import data from '../data.json';
+import items from '../data.json';
+
+const proxyServer = 'https://cors-anywhere.herokuapp.com';
+const url = '';
 
 const Dropdown = (props) => {
-  console.log(data);
+  const [isShowing, setIsShowing] = useState(false);
+  const [selected, setSelected] = useState();
+  const [cursor, setCursor] = useState(-1);
+  const [data, setData] = useState(items);
+  // const [keyword, setKeyword] = useState('');
+
+  useEffect(() => {
+    window.addEventListener('keydown', keyboardNavigation);
+  }, []);
+
+  // input tag에 navigation 추가
+  const keyboardNavigation = (e) => {
+    if (e.key === 'ArrowDown') {
+      console.log('keydown');
+      isShowing
+        ? setCursor((c) => (c < data.length - 1 ? c + 1 : c))
+        : setData();
+    }
+
+    if (e.key === 'ArrowUp') {
+      console.log('keyup');
+      setCursor((c) => (c > 0 ? c - 1 : 0));
+    }
+
+    if (e.key === 'Escape') {
+      console.log('escape');
+      setIsShowing(false);
+    }
+
+    if (e.key === 'Enter' && cursor > 0) {
+      console.log('enter');
+      setSearch(data[cursor].name);
+      setIsShowing(false);
+    }
+  };
+
   return (
     <Container>
-      <ResultList>
-        <Suggestions>추천검색어</Suggestions>
-        {data.map((item, index) => (
-          <Result key={index}>
-            <SearchIcon />
-            <ResultText>{item.name}</ResultText>
-          </Result>
-        ))}
-      </ResultList>
+      {isShowing ? (
+        <ResultList>
+          <Suggestions>추천검색어</Suggestions>
+          {data?.map((item, index) => (
+            <Result key={index} onClick={() => setSelected(item)}>
+              <SearchIcon />
+              <ResultText>{item.name}</ResultText>
+            </Result>
+          ))}
+        </ResultList>
+      ) : (
+        <ResultList>
+          <Suggestions>검색어 없음</Suggestions>
+        </ResultList>
+      )}
     </Container>
   );
 };
@@ -28,7 +72,8 @@ const Container = styled.div`
   border-radius: 24px;
   padding: 24px 0;
   width: 660px;
-  height: 351px;
+  height: auto;
+  max-height: 352px;
   overflow-y: auto;
   margin: auto;
   &::-webkit-scrollbar {
