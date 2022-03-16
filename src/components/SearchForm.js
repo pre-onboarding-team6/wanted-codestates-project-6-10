@@ -1,11 +1,60 @@
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import { ReactComponent as Search } from '../icons/Search.svg';
+import {
+  clearData,
+  getLocalData,
+  searchDisease,
+} from '../redux/diseaseReducer';
 import Dropdown from './Dropdown';
 
 export default function SearchForm() {
   const isDesktop = useMediaQuery({ query: '(min-Width: 1040px)' });
+
+  const [searchText, setSearchText] = useState('');
+  const [timer, setTimer] = useState(null);
+
+  const dispatch = useDispatch();
+  const data = useSelector((state) => state.data);
+
+  const getData = async (value) => {
+    if (value === '') {
+      dispatch(clearData());
+      return;
+    }
+
+    const cache = JSON.parse(localStorage.getItem('searchResult'));
+
+    if (
+      cache !== null &&
+      cache[value] &&
+      Date.now() < cache[value].expireTime
+    ) {
+      // cache된 데이터 가져옴
+      dispatch(getLocalData({ keyword: value }));
+    } else {
+      // api로 데이터 가져옴
+      dispatch(searchDisease(value));
+    }
+  };
+
+  const debounce = (callback) => {
+    if (timer) {
+      clearTimeout(timer);
+    }
+    const newTimer = setTimeout(callback, 800);
+    setTimer(newTimer);
+  };
+
+  const onchangeValue = (e) => {
+    const { value } = e.target;
+    setSearchText(value);
+    debounce(() => {
+      getData(value);
+    });
+  };
 
   return (
     <Container>
@@ -20,7 +69,8 @@ export default function SearchForm() {
           <input
             type="text"
             placeholder="질환명을 입력해 주세요."
-            // onChange={onchangeValue}
+            value={searchText}
+            onChange={onchangeValue}
             // onKeyDown={onKeyDown}
           />
           {!isDesktop && <Search />}
