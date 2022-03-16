@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import React from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { ReactComponent as Search } from '../icons/Search.svg';
+import Dropdown from './Dropdown';
 
 export default function SearchForm() {
   const isDesktop = useMediaQuery({ query: '(min-Width: 1040px)' });
@@ -26,6 +27,9 @@ export default function SearchForm() {
         </SearchBar>
         {isDesktop && <SearchButton>검색</SearchButton>}
       </SearchBarWrap>
+      <ResultListWrapper>
+        <Dropdown />
+      </ResultListWrapper>
     </Container>
   );
 }
@@ -85,4 +89,9 @@ const SearchButton = styled.div`
   padding: 18px 32px;
   cursor: pointer;
   border-radius: 0 42px 42px 0;
+`;
+
+const ResultListWrapper = styled.div`
+  width: 100%;
+  margin-top: 10px;
 `;
