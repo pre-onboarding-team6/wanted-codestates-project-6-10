@@ -85,9 +85,6 @@ export default function SearchForm() {
 }
 
 const Container = styled.div`
-  width: 100vw;
-  height: 100vh;
-  background-color: #cae9ff;
   padding-top: 80px;
 `;
 
