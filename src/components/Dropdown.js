@@ -2,34 +2,24 @@ import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import SearchIcon from '../icons/Search';
 
-import items from '../data.json';
+import { ReactComponent as Search } from '../icons/Search.svg';
 
-const proxyServer = 'https://cors-anywhere.herokuapp.com';
-const url = '';
+import items from '../data.json';
 
 const Dropdown = (props) => {
   const [isShowing, setIsShowing] = useState(false);
   const [selected, setSelected] = useState();
   const [cursor, setCursor] = useState(-1);
   const [data, setData] = useState(items);
-  // const [keyword, setKeyword] = useState('');
-
-  useEffect(() => {
-    window.addEventListener('keydown', keyboardNavigation);
-  }, []);
 
   // input tag에 navigation 추가
   const keyboardNavigation = (e) => {
     if (e.key === 'ArrowDown') {
       console.log('keydown');
-      isShowing
-        ? setCursor((c) => (c < data.length - 1 ? c + 1 : c))
-        : setData();
     }
 
     if (e.key === 'ArrowUp') {
       console.log('keyup');
-      setCursor((c) => (c > 0 ? c - 1 : 0));
     }
 
     if (e.key === 'Escape') {
@@ -39,19 +29,18 @@ const Dropdown = (props) => {
 
     if (e.key === 'Enter' && cursor > 0) {
       console.log('enter');
-      setSearch(data[cursor].name);
-      setIsShowing(false);
+      // setIsShowing(false);
     }
   };
 
   return (
     <Container>
-      {isShowing ? (
+      {true ? (
         <ResultList>
           <Suggestions>추천검색어</Suggestions>
           {data?.map((item, index) => (
             <Result key={index} onClick={() => setSelected(item)}>
-              <SearchIcon />
+              <Search />
               <ResultText>{item.name}</ResultText>
             </Result>
           ))}
