@@ -6,7 +6,7 @@ import items from '../data.json';
 
 const Dropdown = (props) => {
   const [isShowing, setIsShowing] = useState(false);
-  // const [selected, setSelected] = useState(); // selected item, 필요 없을 경우 삭제
+  const [selected, setSelected] = useState(); // selected item, 필요 없을 경우 삭제
   const [cursor, setCursor] = useState(-1);
   const [data, setData] = useState(items);
 
