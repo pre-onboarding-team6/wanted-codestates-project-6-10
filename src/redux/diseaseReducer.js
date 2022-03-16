@@ -9,11 +9,30 @@ const initialState = {
   error: null,
 };
 
+const saveCache = (word, data) => {
+  let cache = JSON.parse(localStorage.getItem('searchResult'));
+  const newData = {
+    result: data,
+    expireTime: Date.now() + 300000,
+  };
+  if (cache === null) {
+    cache = {};
+  }
+  cache[word] = newData;
+  localStorage.setItem(
+    'searchResult',
+    JSON.stringify({
+      ...cache,
+    }),
+  );
+};
+
 export const searchDisease = createAsyncThunk(
   'data/searchData',
   async (word) => {
     const res = await fetch(`${BASE_URL}?name=${word}`);
     const data = await res.json();
+    saveCache(word, data);
     return data;
   },
 );
@@ -21,7 +40,16 @@ export const searchDisease = createAsyncThunk(
 export const diseaseReducer = createSlice({
   name: 'disease',
   initialState,
-  reducers: {},
+  reducers: {
+    clearData: (state) => {
+      state.data = [];
+    },
+    getLocalData: (state, action) => {
+      const { keyword } = action.payload;
+      const cache = JSON.parse(localStorage.getItem('searchResult'));
+      state.data = cache[keyword].result;
+    },
+  },
   extraReducers: {
     [searchDisease.pending]: (state) => {
       state.loading = true;
@@ -38,5 +66,7 @@ export const diseaseReducer = createSlice({
     },
   },
 });
+
+export const { clearData, getLocalData } = diseaseReducer.actions;
 
 export default diseaseReducer.reducer;
