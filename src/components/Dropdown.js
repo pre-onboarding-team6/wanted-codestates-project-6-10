@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import SearchIcon from '../icons/Search';
 
 import { ReactComponent as Search } from '../icons/Search.svg';
-
 import items from '../data.json';
 
 const Dropdown = (props) => {
@@ -65,6 +63,7 @@ const Container = styled.div`
   max-height: 352px;
   overflow-y: auto;
   margin: auto;
+  background-color: white;
   &::-webkit-scrollbar {
     display: none;
   }
