@@ -1,23 +1,41 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 
 import { ReactComponent as Search } from '../icons/Search.svg';
-import items from '../data.json';
 
-const Dropdown = (props) => {
-  const [isShowing, setIsShowing] = useState(false);
-  const [selected, setSelected] = useState(); // selected item, 필요 없을 경우 삭제
-  const [cursor, setCursor] = useState(-1);
-  const [data, setData] = useState(items);
+const Dropdown = ({
+  isShowing,
+  setIsShowing,
+  data,
+  setSelected,
+  cursor,
+  setCursor,
+}) => {
+  const containerRef = useRef();
+  const [listItem, setListItem] = useState([]);
 
-  // input tag에 navigation 추가
+  useEffect(() => {
+    console.log(cursor);
+    console.log(data.length);
+    console.log(isShowing);
+    if (cursor < 0 || cursor > data.length || !isShowing) {
+      return;
+    }
+    containerRef.current.focus();
+    let listItem = Array.from(containerRef.current.children);
+    console.log(listItem);
+  }, [cursor, isShowing, data.length]);
+
   const keyboardNavigation = (e) => {
     if (e.key === 'ArrowDown') {
       console.log('keydown');
+      isShowing &&
+        setCursor((prev) => (prev < data.length - 1 ? prev + 1 : prev));
     }
 
     if (e.key === 'ArrowUp') {
       console.log('keyup');
+      isShowing && setCursor((prev) => (prev > 0 ? prev - 1 : 0));
     }
 
     if (e.key === 'Escape') {
@@ -27,16 +45,17 @@ const Dropdown = (props) => {
 
     if (e.key === 'Enter' && cursor > 0) {
       console.log('enter');
-      // setIsShowing(false);
+      setSelected(data[cursor].name);
+      setIsShowing(false);
     }
   };
 
   return (
     <Container>
-      {true ? (
-        <ResultList>
+      {isShowing && data.length > 0 ? (
+        <ResultList ref={containerRef} onKeyDown={keyboardNavigation}>
           <Suggestions>추천검색어</Suggestions>
-          {data?.map((item, index) => (
+          {data.map((item, index) => (
             <Result key={index} onClick={() => setSelected(item)}>
               <Search />
               <ResultText>{item.name}</ResultText>

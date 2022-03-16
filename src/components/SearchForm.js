@@ -1,11 +1,27 @@
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { ReactComponent as Search } from '../icons/Search.svg';
 import Dropdown from './Dropdown';
 
+import items from '../data.json';
+
 export default function SearchForm() {
   const isDesktop = useMediaQuery({ query: '(min-Width: 1040px)' });
+  const inputRef = useRef(null);
+
+  const [isShowing, setIsShowing] = useState(false);
+  const [cursor, setCursor] = useState(-1);
+  const [data, setData] = useState(items);
+  const [selected, setSelected] = useState(); // selected item, 필요 없을 경우 삭제
+
+  const showResult = (e) => {
+    if (e.key === 'Enter') {
+      setIsShowing(true);
+      setCursor(0);
+      inputRef.current.blur();
+    }
+  };
 
   return (
     <Container>
@@ -18,18 +34,30 @@ export default function SearchForm() {
         <SearchBar>
           {isDesktop && <Search />}
           <input
+            ref={inputRef}
             type="text"
             placeholder="질환명을 입력해 주세요."
             // onChange={onchangeValue}
             // onKeyDown={onKeyDown}
+            onKeyUp={showResult}
+            // onKeyDown={keyboardNavigation}
           />
           {!isDesktop && <Search />}
         </SearchBar>
         {isDesktop && <SearchButton>검색</SearchButton>}
       </SearchBarWrap>
-      <ResultListWrapper>
-        <Dropdown />
-      </ResultListWrapper>
+      {isShowing && (
+        <ResultListWrapper>
+          <Dropdown
+            isShowing={isShowing}
+            setIsShowing={setIsShowing}
+            setSelected={setSelected}
+            data={data}
+            cursor={cursor}
+            setCursor={setCursor}
+          />
+        </ResultListWrapper>
+      )}
     </Container>
   );
 }
