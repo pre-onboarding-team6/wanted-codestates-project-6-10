@@ -4,7 +4,7 @@
 
 - 아래 URL을 클릭하면 배포된 페이지로 이동합니다.
 
-https://humanscape.netlify.app
+배포링크
 
 
 <br>
@@ -27,26 +27,59 @@ https://humanscape.netlify.app
 ## 🕹  설치 및 시작방법
 
 1. github repo 이동
-2. code 버튼 클릭
-3. HTTPS url 복사 (클립보드 버튼 클릭)
-4. 컴퓨터에서 커맨트창 띄우기
-5. 원하는 폴더 위치로 이동
-6. git clone
-7. wanted-codestates-project-6-10 폴더 이동
-8. code .
-9. 에디터 열렸으면 터미널 open
 
-```
-# install dependencies
- $ npm install
+	https://github.com/pre-onboarding-team6/wanted-codestates-project-6-10
 
-# serve with hot reload at localhost:3000
- $ npm start
-```
+2. code 버튼 클릭 및 HTTPS url 복사 (클립보드 버튼 클릭)
+
+	![2](https://user-images.githubusercontent.com/80020227/158720778-97259019-a572-4e40-905e-286f5925fc12.JPG)
+
+3. 컴퓨터에서 커맨트창 띄우고 원하는 폴더 위치로 이동
+
+	ex)
+	```
+	C:Users\username> mkdir wantedHumanscape
+	C:Users\username> cd wantedHumanscape
+	```
+
+4. git clone
+
+	```
+	C:Users\username\wantedHumanscape> git clone https://github.com/pre-onboarding-team6/wanted-codestates-project-6-10.git
+	```
+
+5. wanted-codestates-project-6-10 폴더 이동 및 에디터 열기
+
+	```
+	C:Users\username\wantedHumanscape> cd wanted-codestates-project-6-10
+	C:Users\username\wantedHumanscape\wanted-codestates-project-6-10> code .
+	```
+
+6. 에디터 열렸으면 터미널 open 및 다음과 같이 실행
+
+	- install dependencies
+		```
+		$ npm install
+		```
+
+	- serve with hot reload at localhost:3000
+		```
+		$ npm start
+		```
 
 <br>
 
-## 📝 구현 목록 및 회고
+## 📝 구현
+
+| 1. 검색어 입력 후 키보드로 이동 | 2. 검색어 입력 후 마우스로 이동 | 3. 검색어 매칭 단어 없을 경우 |
+| --- | --- | --- |
+| <img src="https://user-images.githubusercontent.com/80020227/158721671-7c260ea8-a13b-47c1-9a3a-d58d03c5ca77.gif" width="300"/> | <img src="https://user-images.githubusercontent.com/80020227/158721682-3db70eac-556e-40ad-a7ee-7f4f1ba0fc57.gif" width="300"/> | <img src="https://user-images.githubusercontent.com/80020227/158721694-5c42b064-1834-464b-be54-05cc7632125a.gif" width="300"/> |
+
+4. 로컬 스토리지를 이용한 캐싱
+
+	<img src="https://user-images.githubusercontent.com/80020227/158721711-364a6a68-596e-4b93-8770-ac4c4c04eed7.JPG" width="600"/>
+
+## ☑ 회고
 
 단어를 검색하여 단어가 포함되어 있는 질병을 리스트 결과로 표시하는 서비스
 
@@ -110,6 +143,8 @@ Dropdown 컴포넌트 제작 및 키보드 방향키를 이용하여 검색어 �
 	- 키보드 네비게이션 등 처음 구현해보는 기능들이 있어 프로젝트 초기에는 어떻게 해야하나 막막했는데, 팀원들의 조언으로 방향을 잡을 수 있었습니다.
 	- 처음에는 input에 keydown이벤트를 넣어 구현했다가 이후 useEffect를 사용해 변경했습니다. 방향키는 한 번 만 눌려도keydown이벤트가 여러번 발생하는 문제가 생겨 애를 먹었는데 cleanup함수, useCallback으로 이를 방지했습니다.
 	- 키보드와 마우스 모두로 요소에 접근하는 이벤트를 처리하는 것이 까다로웠습니다. 각각의 검색결과 요소에 mousemove 이벤트가 발생할 때에는 키보드 이벤트는 동작하지 않는 것으로 처리하고, 번갈아서 요소에 접근할 때에는 마지막 요소의 index를 기억하도록 해 사용자 편의성을 높였습니다.
+
+
 <br>
 
 ## 🗂 프로젝트 구조
