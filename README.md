@@ -4,7 +4,7 @@
 
 - 아래 URL을 클릭하면 배포된 페이지로 이동합니다.
 
-배포링크
+https://humanscape.netlify.app
 
 
 <br>
