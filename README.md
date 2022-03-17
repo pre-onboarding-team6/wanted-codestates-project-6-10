@@ -90,8 +90,11 @@ Redux를 이용하여 api 호출, 응답 데이터를 전역 상태로 관리
 Form 컴포넌트 제작 및 전체 UI (반응형)
 
 - 구현한 방법과 이유
+	- [https://clinicaltrialskorea.com/](https://clinicaltrialskorea.com/) 의 검색 영역 클론코딩
+	- 화면 크기에 따라 검색영역 디자인이 달라지도록 반응형 웹 구현
 
 - 어려웠던 점
+	- 두 가지 검색영역 디자인을 CSS Media-Query로 작성하려면 display:none/ display:block; 으로 나눠서 처리해야 하는 번거로움이 있어 react-responsive 모듈이 제공하는 useMediaQuery Hook 사용
 
 ### 4. Dropdown 구현
 
