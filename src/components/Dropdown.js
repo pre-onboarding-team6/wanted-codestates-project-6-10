@@ -3,7 +3,15 @@ import styled from '@emotion/styled';
 
 import { ReactComponent as Search } from '../icons/Search.svg';
 
-const Dropdown = ({ isShowing, data, cursor, mousedown, isMovingMouse }) => {
+const Dropdown = ({
+  isShowing,
+  data,
+  cursor,
+  mousedown,
+  isMovingMouse,
+  setSearchText,
+  setIsShowing,
+}) => {
   const containerRef = useRef();
 
   useEffect(() => {
@@ -19,6 +27,11 @@ const Dropdown = ({ isShowing, data, cursor, mousedown, isMovingMouse }) => {
     }
   }, [cursor, data, isShowing, isMovingMouse]);
 
+  const handleSelect = (e) => {
+    setSearchText(e.target.innerText);
+    setIsShowing(false);
+  };
+
   return (
     <Container>
       {isShowing && data.length > 0 ? (
@@ -29,6 +42,8 @@ const Dropdown = ({ isShowing, data, cursor, mousedown, isMovingMouse }) => {
               key={index}
               selected={cursor === index}
               onMouseMove={(e) => mousedown(e, index)}
+              onKeyUp={handleSelect}
+              onClick={handleSelect}
             >
               <Search />
               <ResultText>{item.name}</ResultText>

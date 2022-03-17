@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import { ReactComponent as Search } from '../icons/Search.svg';
@@ -23,6 +23,12 @@ export default function SearchForm() {
   const dispatch = useDispatch();
   const data = useSelector((state) => state.data);
 
+  const searchInputRef = useRef();
+
+  useEffect(() => {
+    searchInputRef.current.focus();
+  }, []);
+
   const keyboardNavigation = useCallback(
     (e) => {
       setIsMovingMouse(false);
@@ -37,6 +43,7 @@ export default function SearchForm() {
         setIsShowing(false);
       }
       if (e.key === 'Enter' && cursor > 0) {
+        setSearchText(data.data[cursor].name);
         setIsShowing(false);
       }
     },
@@ -80,12 +87,11 @@ export default function SearchForm() {
     });
   };
 
-  const showResult = (e) => {
-    if (e.key === 'Enter') {
+  useEffect(() => {
+    if (data.data.length > 0) {
       setIsShowing(true);
-      e.target.blur();
     }
-  };
+  }, [data.data]);
 
   const mousedown = (e, index) => {
     setIsMovingMouse(true);
@@ -118,7 +124,7 @@ export default function SearchForm() {
             placeholder="질환명을 입력해 주세요."
             value={searchText}
             onChange={onchangeValue}
-            onKeyUp={showResult}
+            ref={searchInputRef}
           />
           {!isDesktop && <Search />}
         </SearchBar>
@@ -135,6 +141,8 @@ export default function SearchForm() {
             cursor={cursor}
             mousedown={mousedown}
             isMovingMouse={isMovingMouse}
+            setSearchText={setSearchText}
+            setIsShowing={setIsShowing}
           />
         </ResultListWrap>
       )}
