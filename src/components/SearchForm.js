@@ -88,10 +88,10 @@ export default function SearchForm() {
   };
 
   useEffect(() => {
-    if (data.data.length > 0) {
+    if (searchText || data.data.length > 0) {
       setIsShowing(true);
     }
-  }, [data.data]);
+  }, [data.data, searchText]);
 
   const mousedown = (e, index) => {
     setIsMovingMouse(true);
