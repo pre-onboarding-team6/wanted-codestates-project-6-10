@@ -86,11 +86,14 @@ export const reset = css`
     padding: 0;
     border: 0;
     font-size: 100%;
-    font: inherit;
+    /* font: inherit; */
     vertical-align: baseline;
   }
   * {
     box-sizing: border-box;
+  }
+  body {
+    background-color: #cae9ff;
   }
 
   article,
