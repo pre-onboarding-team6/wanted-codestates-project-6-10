@@ -41,7 +41,7 @@ const Dropdown = ({
             <Result
               key={index}
               selected={cursor === index}
-              onMouseMove={(e) => mousedown(e, index)}
+              onMouseMove={(e) => mousedown(index)}
               onKeyUp={handleSelect}
               onClick={handleSelect}
             >
