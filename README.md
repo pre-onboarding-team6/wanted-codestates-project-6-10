@@ -4,7 +4,7 @@
 
 - 아래 URL을 클릭하면 배포된 페이지로 이동합니다.
 
-배포링크
+https://humanscape.netlify.app/
 
 
 <br>
@@ -71,6 +71,8 @@
 
 ## 📝 구현
 
+단어를 검색하여 단어가 포함되어 있는 질병을 리스트 결과로 표시하는 서비스
+
 | 1. 검색어 입력 후 키보드로 이동 | 2. 검색어 입력 후 마우스로 이동 | 3. 검색어 매칭 단어 없을 경우 |
 | --- | --- | --- |
 | <img src="https://user-images.githubusercontent.com/80020227/158721671-7c260ea8-a13b-47c1-9a3a-d58d03c5ca77.gif" width="300"/> | <img src="https://user-images.githubusercontent.com/80020227/158721682-3db70eac-556e-40ad-a7ee-7f4f1ba0fc57.gif" width="300"/> | <img src="https://user-images.githubusercontent.com/80020227/158721694-5c42b064-1834-464b-be54-05cc7632125a.gif" width="300"/> |
@@ -81,15 +83,14 @@
 
 ## ☑ 회고
 
-단어를 검색하여 단어가 포함되어 있는 질병을 리스트 결과로 표시하는 서비스
-
 ### 1. Redux 구현
 
-Redux를 이용하여 api 호출, 응답 데이터를 전역 상태로 관리
+`Redux를 이용하여 api 호출, 응답 데이터를 전역 상태로 관리`
 
 - 구현한 방법과 이유
 
-    - 전역 상태 관리 툴: redux의 장황한 문법을 줄여 가독성을 높이기 위해 redux toolkit 사용
+    - 전역 상태 관리 툴: <br>
+    	redux의 장황한 문법을 줄여 가독성을 높이기 위해 redux toolkit 사용
 
     - 구현 내용: <br>
       먼저 검색한 단어를 이용하여 api 요청을 하고, 받은 응답을 전역 store에 저장하고자했다.
@@ -106,21 +107,23 @@ Redux를 이용하여 api 호출, 응답 데이터를 전역 상태로 관리
 
     redux toolkit을 처음 이용해보았는데, redux의 패턴은 알고 있는데도 불구하고 축약된 느낌이라 메서드를 사용하는 데에 조금 생소한 느낌이었다.
 
+<hr>
+
 ### 2. api 호출 최적화
 
+`
 단어가 expire time이 지나지 않았을 때 api 요청을 하지 않고 캐시되어 있던 데이터 사용
-<br>\- 로컬 캐싱 (expire 까지)
-<br>\- 입력마다 호출하지 않고 호출 횟수 줄이기
-
+`
 
 - 구현한 방법과 이유
 
 - 어려웠던 점
 
+<hr>
 
 ### 3. Form 컴포넌트 및 전체 UI
 
-Form 컴포넌트 제작 및 전체 UI (반응형)
+`Form 컴포넌트 제작 및 전체 UI (반응형)`
 
 - 구현한 방법과 이유
 	- [https://clinicaltrialskorea.com/](https://clinicaltrialskorea.com/) 의 검색 영역 클론코딩
@@ -129,9 +132,11 @@ Form 컴포넌트 제작 및 전체 UI (반응형)
 - 어려웠던 점
 	- 두 가지 검색영역 디자인을 CSS Media-Query로 작성하려면 display:none/ display:block; 으로 나눠서 처리해야 하는 번거로움이 있어 react-responsive 모듈이 제공하는 useMediaQuery Hook 사용
 
+<hr>
+
 ### 4. Dropdown 구현
 
-Dropdown 컴포넌트 제작 및 키보드 방향키를 이용하여 검색어 이동 구현
+`Dropdown 컴포넌트 제작 및 키보드 방향키를 이용하여 검색어 이동 구현`
 
 - 구현한 방법과 이유
 	- 검색어를 입력하면 검색어가 포함된 추천검색어가 자동완성되도록 구현했습니다. 추천검색어는 키보드 방향키와 마우스로 접근이 가능해야 했습니다.
