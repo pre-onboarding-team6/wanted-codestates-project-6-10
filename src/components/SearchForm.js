@@ -40,10 +40,12 @@ export default function SearchForm() {
         isShowing && setCursor((prev) => (prev > 0 ? prev - 1 : 0));
       }
       if (e.key === 'Escape') {
+        setCursor(-1);
         setIsShowing(false);
       }
       if (e.key === 'Enter' && cursor > 0) {
         setSearchText(data.data[cursor].name);
+        setCursor(-1);
         setIsShowing(false);
       }
     },
@@ -90,10 +92,13 @@ export default function SearchForm() {
   useEffect(() => {
     if (searchText || data.data.length > 0) {
       setIsShowing(true);
+    } else {
+      setIsShowing(false);
+      setCursor(-1);
     }
   }, [data.data, searchText]);
 
-  const mousedown = (e, index) => {
+  const mousedown = (index) => {
     setIsMovingMouse(true);
     setCursor(index);
   };
