@@ -1,43 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 
 import { ReactComponent as Search } from '../icons/Search.svg';
-import items from '../data.json';
 
-const Dropdown = (props) => {
-  const [isShowing, setIsShowing] = useState(false);
-  const [selected, setSelected] = useState(); // selected item, 필요 없을 경우 삭제
-  const [cursor, setCursor] = useState(-1);
-  const [data, setData] = useState(items);
+const Dropdown = ({ isShowing, data, cursor, mousedown, isMovingMouse }) => {
+  const containerRef = useRef();
 
-  // input tag에 navigation 추가
-  const keyboardNavigation = (e) => {
-    if (e.key === 'ArrowDown') {
-      console.log('keydown');
+  useEffect(() => {
+    if (isMovingMouse) {
+      return;
     }
-
-    if (e.key === 'ArrowUp') {
-      console.log('keyup');
+    if (cursor >= 0 && isShowing && data.length > 0) {
+      containerRef &&
+        containerRef.current.children[cursor].scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
     }
-
-    if (e.key === 'Escape') {
-      console.log('escape');
-      setIsShowing(false);
-    }
-
-    if (e.key === 'Enter' && cursor > 0) {
-      console.log('enter');
-      // setIsShowing(false);
-    }
-  };
+  }, [cursor, data, isShowing, isMovingMouse]);
 
   return (
     <Container>
-      {true ? (
-        <ResultList>
+      {isShowing && data.length > 0 ? (
+        <ResultList ref={containerRef}>
           <Suggestions>추천검색어</Suggestions>
-          {data?.map((item, index) => (
-            <Result key={index} onClick={() => setSelected(item)}>
+          {data.map((item, index) => (
+            <Result
+              key={index}
+              selected={cursor === index}
+              onMouseMove={(e) => mousedown(e, index)}
+            >
               <Search />
               <ResultText>{item.name}</ResultText>
             </Result>
@@ -55,10 +47,9 @@ const Dropdown = (props) => {
 export default Dropdown;
 
 const Container = styled.div`
-  border: 1px solid #ddd; // need to delete when component is merged
   border-radius: 24px;
   padding: 24px 0;
-  width: 660px;
+  width: 100%;
   height: auto;
   max-height: 352px;
   overflow-y: auto;
@@ -89,6 +80,7 @@ const Result = styled.li`
   &:hover {
     background-color: #f0f0f0;
   }
+  background-color: ${(props) => props.selected && '#f0f0f0'};
 `;
 
 const ResultText = styled.span`
